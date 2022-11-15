@@ -1,0 +1,19 @@
+{
+  "name": "my-algorithm-problem-solutions",
+  "version": "1.0.0",
+  "description": "This repository contains the solutions about the algorithm problems.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gignac-cha/my-algorithm-problem-solutions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gignac-cha/my-algorithm-problem-solutions/issues"
+  },
+  "homepage": "https://github.com/gignac-cha/my-algorithm-problem-solutions#readme"
+}
