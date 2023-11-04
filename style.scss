@@ -1,0 +1,32 @@
+html,
+body,
+:root,
+#root {
+  min-height: 100vh;
+  color-scheme: light dark;
+  // TODO: Chrome is not supported yet
+  // background-color: light-dark(white, #333);
+  // color: light-dark(black, white);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+@media (prefers-color-scheme: light) {
+  html,
+  body,
+  :root,
+  #root {
+    background-color: white;
+    color: black;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  html,
+  body,
+  :root,
+  #root {
+    background-color: #333;
+    color: white;
+  }
+}
