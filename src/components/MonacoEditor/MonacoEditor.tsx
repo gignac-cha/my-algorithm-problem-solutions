@@ -1,5 +1,5 @@
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
-import { FunctionComponent, useEffect, useRef } from 'react';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { getLanguageFromExtensions } from '../../utilities/monacoEditor';
 import { styles } from './styles';
 import './userWorker';
@@ -25,6 +25,7 @@ export const MonacoEditor: FunctionComponent<MonacoEditorProperties> = ({
         language,
         theme,
         scrollBeyondLastLine: false,
+        readOnly: true,
       });
       editorRef.current.layout({
         width: elementRef.current.clientWidth,
@@ -47,5 +48,20 @@ export const MonacoEditor: FunctionComponent<MonacoEditorProperties> = ({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  return <div css={styles.container} ref={elementRef}></div>;
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (theme) {
+      editor.setTheme(theme);
+      setLoading(true);
+      setTimeout(() => setLoading(false), 1000 / 6);
+    }
+  }, [theme]);
+
+  return (
+    <div
+      css={[styles.container, isLoading && styles.loadingContainer]}
+      ref={elementRef}
+    ></div>
+  );
 };

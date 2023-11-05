@@ -1,4 +1,13 @@
-import { FunctionComponent, Suspense, lazy, useMemo } from 'react';
+import {
+  FunctionComponent,
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSolutionQuery } from '../../../queries/useSolutionQuery';
 import {
   getLanguageFromExtensions,
@@ -29,7 +38,19 @@ const Container: FunctionComponent<SolutionViewerProperties> = ({
     [solution.name],
   );
 
-  const theme = useMemo(() => getTheme(), []);
+  const [theme, setTheme] = useState<string>();
+
+  const ref = useRef<number>();
+
+  const callback = useCallback(() => {
+    ref.current = requestAnimationFrame(callback);
+    setTheme(getTheme());
+  }, []);
+
+  useEffect(() => {
+    ref.current = requestAnimationFrame(callback);
+    return () => (ref.current ? cancelAnimationFrame(ref.current) : undefined);
+  }, [callback]);
 
   return <LazyMonacoEditor value={code} language={language} theme={theme} />;
 };
