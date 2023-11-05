@@ -1,10 +1,9 @@
-import { FunctionComponent, Suspense, useMemo } from 'react';
+import { FunctionComponent, Suspense, lazy, useMemo } from 'react';
 import { useSolutionQuery } from '../../../queries/useSolutionQuery';
 import {
   getLanguageFromExtensions,
   getTheme,
 } from '../../../utilities/monacoEditor';
-import { MonacoEditor } from '../../MonacoEditor/MonacoEditor';
 import { SolutionViewerLoading } from './SolutionViewerLoading';
 import { styles } from './styles';
 
@@ -12,6 +11,12 @@ interface SolutionViewerProperties {
   category: CategoryLike;
   solution: SolutionLike;
 }
+
+const LazyMonacoEditor = lazy(() =>
+  import('../../MonacoEditor/MonacoEditor').then(({ MonacoEditor }) => ({
+    default: MonacoEditor,
+  })),
+);
 
 const Container: FunctionComponent<SolutionViewerProperties> = ({
   category,
@@ -26,7 +31,7 @@ const Container: FunctionComponent<SolutionViewerProperties> = ({
 
   const theme = useMemo(() => getTheme(), []);
 
-  return <MonacoEditor value={code} language={language} theme={theme} />;
+  return <LazyMonacoEditor value={code} language={language} theme={theme} />;
 };
 
 export const SolutionViewer: FunctionComponent<SolutionViewerProperties> = ({
