@@ -6,13 +6,22 @@ import { getSolution, getSolutions } from '../utilities/request';
 
 export const useSolutionsQuery = (category: CategoryLike) => {
   const accessToken = localStorage.getItem(accessTokenKey);
-  return useSuspenseQuery({
+  return useSuspenseQuery<
+    GitHubContentResponse[],
+    GitHubContentErrorResponse | GitHubRateLimitErrorResponse,
+    GitHubFileContent[]
+  >({
     queryKey: ['github', 'content', 'solutions', category.name, accessToken],
     queryFn: () => getSolutions({ category, accessToken }),
     select: (data: GitHubContentResponse[]) =>
-      data.map((value: GitHubContentResponse) =>
-        convertGitHubContentResponse(value),
-      ),
+      data
+        .map((value: GitHubContentResponse) =>
+          convertGitHubContentResponse(value),
+        )
+        .filter(
+          (content: GitHubContent): content is GitHubFileContent =>
+            content.type === 'file',
+        ),
     retry: (failureCount: number, error: GitHubRateLimitErrorResponse) => {
       if (failureCount > defaultFailureCount) {
         return false;

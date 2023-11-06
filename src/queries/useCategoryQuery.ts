@@ -9,14 +9,19 @@ export const useCategoriesQuery = () => {
   return useSuspenseQuery<
     GitHubContentResponse[],
     GitHubContentErrorResponse | GitHubRateLimitErrorResponse,
-    GitHubContent[]
+    GitHubDirContent[]
   >({
     queryKey: ['github', 'content', 'categories', accessToken],
     queryFn: () => getCategories({ accessToken }),
     select: (data: GitHubContentResponse[]) =>
-      data.map((value: GitHubContentResponse) =>
-        convertGitHubContentResponse(value),
-      ),
+      data
+        .map((value: GitHubContentResponse) =>
+          convertGitHubContentResponse(value),
+        )
+        .filter(
+          (content: GitHubContent): content is GitHubDirContent =>
+            content.type === 'dir',
+        ),
     retry: (failureCount: number, error: GitHubRateLimitErrorResponse) => {
       if (failureCount > defaultFailureCount) {
         return false;

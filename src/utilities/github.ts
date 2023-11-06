@@ -37,7 +37,7 @@ export const convertGitHubContentResponse = ({
   path,
   size,
   download_url: downloadURL,
-}: GitHubContentResponse) => ({
+}: GitHubContentResponse): GitHubContent => ({
   type,
   name,
   path,

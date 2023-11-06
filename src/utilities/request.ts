@@ -105,12 +105,7 @@ const getGitHubContent = async ({
 export const getCategories = async ({
   accessToken,
 }: NeedAccessTokenProperties): Promise<GitHubContentResponse[]> => {
-  const contents: GitHubContentResponse[] = await getGitHubContents({
-    accessToken,
-  });
-  return contents.filter(
-    (content: GitHubContentResponse) => content.type === 'dir',
-  );
+  return getGitHubContents({ accessToken });
 };
 
 interface GetSolutionsProperties {
@@ -123,13 +118,7 @@ export const getSolutions = async ({
 }: GetSolutionsProperties & NeedAccessTokenProperties): Promise<
   GitHubContentResponse[]
 > => {
-  const contents: GitHubContentResponse[] = await getGitHubContents({
-    path: category.name,
-    accessToken,
-  });
-  return contents.filter(
-    (content: GitHubContentResponse) => content.type === 'file',
-  );
+  return getGitHubContents({ path: category.name, accessToken });
 };
 
 interface GetSolutionProperties {
