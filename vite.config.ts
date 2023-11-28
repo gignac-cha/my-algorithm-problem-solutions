@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { copyFile } from 'fs/promises';
 import { IncomingMessage, ServerResponse } from 'http';
 import {
   Connect,
@@ -11,13 +12,19 @@ import {
 export default defineConfig({
   base: '',
   build: {
-    outDir: 'docs',
+    outDir: '_site',
     emptyOutDir: true,
     minify: true,
   },
   plugins: [
     react(),
     splitVendorChunkPlugin(),
+    {
+      name: 'close-bundle',
+      closeBundle: async () => {
+        await copyFile('_site/index.html', '_site/404.html');
+      },
+    },
     {
       name: 'rewrite-all',
       configureServer: (server: ViteDevServer) => () => {
