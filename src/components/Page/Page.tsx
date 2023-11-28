@@ -1,6 +1,4 @@
-import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Debug } from '../Debug/Debug';
 import { Header } from '../Header/Header';
 import { Main } from '../Main/Main';
 import { Navigator } from '../Navigator/Navigator';
@@ -16,9 +14,6 @@ export const Page = () => {
       {/* <aside></aside> */}
       <Main />
       {/* <footer></footer> */}
-      <Suspense>
-        <Debug />
-      </Suspense>
     </div>
   );
 };

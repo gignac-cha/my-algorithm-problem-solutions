@@ -10,7 +10,7 @@ interface SolutionListProperties {
 }
 
 const Container: FunctionComponent<SolutionListProperties> = ({ category }) => {
-  const { data: solutions } = useSolutionsQuery(category);
+  const { data: solutions } = useSolutionsQuery({ category });
 
   const navigate = useNavigate();
   const moveToSolution = useCallback(
