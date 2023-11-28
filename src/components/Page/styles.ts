@@ -10,6 +10,7 @@ export const styles = {
     margin: auto;
 
     @media (max-width: 30rem) {
+      padding: 1rem;
       width: 100%;
     }
     @media (min-width: 30rem) and (max-width: 60rem) {

@@ -16,7 +16,7 @@ export const CategoryListItem: FunctionComponent<
         <span>
           <FontAwesomeIcon icon={faFolder} />
         </span>
-        <span>{category.name}</span>
+        <code>{category.name}</code>
       </button>
     </li>
   );

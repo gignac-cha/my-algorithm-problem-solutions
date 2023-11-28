@@ -5,11 +5,10 @@ import { Root } from './components/Root';
 const createRootElement = (id: string) => {
   const element = document.createElement('div');
   element.setAttribute('id', id);
-  return element;
+  return document.body.appendChild(element);
 };
 
 export const initializeRoot = () =>
   createRoot(
-    document.querySelector('#root') ??
-      document.body.appendChild(createRootElement('root')),
+    document.querySelector('#root') ?? createRootElement('root'),
   ).render(createElement(Root));

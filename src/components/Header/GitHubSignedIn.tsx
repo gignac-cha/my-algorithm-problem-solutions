@@ -33,33 +33,31 @@ const Container: FunctionComponent<GitHubSignedInProperties> = ({
 
   return (
     <section css={styles.signedIn.container}>
-      <h2 css={styles.signedIn.userContainer}>
-        <button css={commonStyles.emptyButton}>
-          <img
-            css={styles.signedIn.avatar}
-            src={user.avatarURL}
-            alt={`${user.name} (${user.id})`}
-            title={`${user.name} (${user.id})`}
-          />
-        </button>
-        <section
-          css={[
-            styles.signedIn.userMenuContainer,
-            isCollapsed && styles.signedIn.hiddenUserMenuContainer,
-          ]}
+      <button css={commonStyles.emptyInput}>
+        <img
+          css={styles.signedIn.avatar}
+          src={user.avatarURL}
+          alt={`${user.name} (${user.id})`}
+          title={`${user.name} (${user.id})`}
+        />
+      </button>
+      <span
+        css={[
+          styles.signedIn.userMenu.container,
+          isCollapsed && styles.signedIn.hiddenUserMenuContainer,
+        ]}
+      >
+        <span css={styles.signedIn.userMenu.name}>{user.name}</span>
+        <small css={styles.signedIn.userMenu.id}>
+          <code>({user.id})</code>
+        </small>
+        <button
+          css={[commonStyles.button, styles.signedIn.button]}
+          onClick={signOut}
         >
-          <span>{user.name}</span>
-          <span>
-            <small>({user.id})</small>
-          </span>
-          <button
-            css={[commonStyles.linkButton, styles.signedIn.button]}
-            onClick={signOut}
-          >
-            Sign Out
-          </button>
-        </section>
-      </h2>
+          Sign Out
+        </button>
+      </span>
     </section>
   );
 };

@@ -17,9 +17,9 @@ export const SolutionListItem: FunctionComponent<
         <span>
           <FontAwesomeIcon icon={faPython} />
         </span>
-        <span>
+        <code>
           {solution.name} <small>({convertByteUnit(solution.size)})</small>
-        </span>
+        </code>
       </button>
     </li>
   );

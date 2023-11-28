@@ -9,6 +9,11 @@ export const styles = {
     justify-content: space-between;
     align-items: center;
   `,
+  title: css`
+    label: header-title;
+
+    letter-spacing: -0.1rem;
+  `,
 
   githubSign: {
     container: css`
@@ -23,14 +28,6 @@ export const styles = {
       ${commonStyles.flex.column}
       label: signed-in-container;
 
-      column-gap: 1rem;
-      justify-content: center;
-      align-items: center;
-    `,
-    userContainer: css`
-      ${commonStyles.flex.column}
-      label: signed-in-user-container;
-
       column-gap: 0.5rem;
       justify-content: center;
       align-items: center;
@@ -42,14 +39,27 @@ export const styles = {
       height: 2rem;
       border-radius: 50%;
     `,
-    userMenuContainer: css`
-      ${commonStyles.flex.column}
-      label: signed-in-user-menu-container;
+    userMenu: {
+      container: css`
+        ${commonStyles.flex.column}
+        label: signed-in-user-menu-container;
 
-      column-gap: 0.5rem;
-      justify-content: center;
-      align-items: center;
-    `,
+        column-gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+      `,
+      id: css`
+        label: signed-in-user-menu-id;
+
+        color: #777;
+        letter-spacing: -0.05rem;
+      `,
+      name: css`
+        label: signed-in-user-menu-name;
+
+        letter-spacing: -0.05rem;
+      `,
+    },
     hiddenUserMenuContainer: css`
       display: none;
     `,

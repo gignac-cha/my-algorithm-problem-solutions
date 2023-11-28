@@ -11,7 +11,7 @@ export const Header = () => {
 
   return (
     <header css={styles.container}>
-      <h1>{title}</h1>
+      <h1 css={styles.title}>{title}</h1>
       <GitHubSign />
     </header>
   );
