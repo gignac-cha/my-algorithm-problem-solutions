@@ -90,6 +90,7 @@ jobs:
 
   # Build job
   build-on-merged:
+    if: github.event.pull_request.merged == true
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
@@ -139,6 +140,7 @@ jobs:
 
   # Deployment job
   deploy-on-merged:
+    if: github.event.pull_request.merged == true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
