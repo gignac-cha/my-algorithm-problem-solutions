@@ -1,18 +1,7 @@
-import {
-  FunctionComponent,
-  Suspense,
-  lazy,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { FunctionComponent, Suspense, lazy, useMemo, useState } from 'react';
+import { useAnimationFrame } from '../../../hooks/useAnimationFrame';
 import { useSolutionQuery } from '../../../queries/useSolutionQuery';
-import {
-  getLanguageFromExtensions,
-  getTheme,
-} from '../../../utilities/monacoEditor';
+import { getLanguageFromExtensions, getTheme } from '../../../utilities/monaco';
 import { SolutionViewerLoading } from './SolutionViewerLoading';
 import { styles } from './styles';
 
@@ -39,20 +28,16 @@ const Container: FunctionComponent<SolutionViewerProperties> = ({
   );
 
   const [theme, setTheme] = useState<string>();
+  useAnimationFrame(() => setTheme(getTheme()));
 
-  const ref = useRef<number>();
-
-  const callback = useCallback(() => {
-    ref.current = requestAnimationFrame(callback);
-    setTheme(getTheme());
-  }, []);
-
-  useEffect(() => {
-    ref.current = requestAnimationFrame(callback);
-    return () => (ref.current ? cancelAnimationFrame(ref.current) : undefined);
-  }, [callback]);
-
-  return <LazyMonacoEditor value={code} language={language} theme={theme} />;
+  return (
+    <LazyMonacoEditor
+      language={language}
+      theme={theme}
+      placeholder="Write your solution here..."
+      value={code}
+    />
+  );
 };
 
 export const SolutionViewer: FunctionComponent<SolutionViewerProperties> = ({

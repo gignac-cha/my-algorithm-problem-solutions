@@ -5,6 +5,8 @@ const {
   VITE_GITHUB_API_URL: GITHUB_API_URL,
   VITE_GITHUB_OWNER: GITHUB_OWNER,
   VITE_GITHUB_REPOSITORY: GITHUB_REPOSITORY,
+  VITE_GITHUB_USER_NAME: GITHUB_USER_NAME,
+  VITE_GITHUB_USER_EMAIL: GITHUB_USER_EMAIL,
 } = import.meta.env;
 
 interface GetGitHubAccessTokenProperties {
@@ -57,14 +59,20 @@ export const getGitHubUser = async ({
 };
 
 const GITHUB_CONTENTS_API_BASE_URL = `${GITHUB_API_URL}/repos`;
+const getGitHubSubRepositoryURL = (
+  owner: string,
+  repository: string,
+  subRepository: string,
+  path?: string,
+) =>
+  `${GITHUB_CONTENTS_API_BASE_URL}/${owner}/${repository}-${subRepository}/contents${
+    path ? `/${path}` : ''
+  }?ref=test`;
 const getGitHubContentsURL = (
   owner: string,
   repository: string,
   path?: string,
-) =>
-  `${GITHUB_CONTENTS_API_BASE_URL}/${owner}/${repository}-contents/contents${
-    path ? `/${path}` : ''
-  }`;
+) => getGitHubSubRepositoryURL(owner, repository, 'contents', path);
 
 interface GetGitHubContentsProperties {
   path?: string;
@@ -100,6 +108,45 @@ const getGitHubContent = async ({
 }: GetGitHubContentProperties &
   NeedAccessTokenProperties): Promise<GitHubContentResponse> => {
   return getGitHubContents({ path, accessToken });
+};
+
+interface AddGitHubContentProperties {
+  path: string;
+  content: string;
+}
+
+const addGitHubContent = async ({
+  path,
+  content,
+  accessToken,
+}: AddGitHubContentProperties &
+  NeedAccessTokenProperties): Promise<unknown> => {
+  const url = new URL(
+    getGitHubContentsURL(GITHUB_OWNER, GITHUB_REPOSITORY, path),
+  );
+  const headers: HeadersInit = {};
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+    headers['Content-Type'] = 'application/json';
+  }
+  const data: PutGitHubRequest = {
+    onwer: GITHUB_OWNER,
+    repo: GITHUB_REPOSITORY,
+    branch: 'test', // TODO: remove
+    path,
+    message: `Add ${path}`,
+    committer: {
+      name: GITHUB_USER_NAME,
+      email: GITHUB_USER_EMAIL,
+    },
+    content: btoa(content),
+  };
+  const body = JSON.stringify(data);
+  const response: Response = await fetch(url, { method: 'PUT', headers, body });
+  if (!response.ok) {
+    throw await response.json();
+  }
+  return response.json();
 };
 
 export const getCategories = async ({
@@ -138,4 +185,23 @@ export const getSolution = async ({
   const { downloadURL } = convertGitHubContentResponse(content);
   const response: Response = await fetch(downloadURL);
   return response.text();
+};
+
+interface AddSolutionProperties {
+  category: CategoryLike;
+  solution: SolutionLike;
+  content: string;
+}
+
+export const addSolution = async ({
+  category,
+  solution,
+  content,
+  accessToken,
+}: AddSolutionProperties & NeedAccessTokenProperties): Promise<unknown> => {
+  return addGitHubContent({
+    path: `${category.name}/${solution.name}`,
+    content,
+    accessToken,
+  });
 };

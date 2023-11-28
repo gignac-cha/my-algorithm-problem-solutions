@@ -5,7 +5,23 @@ export const styles = {
   container: css`
     ${commonStyles.flex.row}
     label: main-container;
+
+    position: relative;
   `,
+
+  header: {
+    container: css`
+      ${commonStyles.flex.column}
+      label: main-header-container;
+
+      position: absolute;
+      top: -3rem;
+      right: 0;
+      justify-content: flex-end;
+      align-items: center;
+      column-gap: 1rem;
+    `,
+  },
 
   rateLimitError: {
     container: css`

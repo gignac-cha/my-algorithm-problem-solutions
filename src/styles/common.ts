@@ -1,11 +1,60 @@
 import { css } from '@emotion/react';
 
-const emptyButton = css`
-  label: common-empty-button;
+const emptyInput = css`
+  label: common-empty-input;
 
   background: none;
   border: none;
   outline: none;
+`;
+
+const input = css`
+  ${emptyInput}
+  label: common-input;
+
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #eee;
+  }
+  @media (prefers-color-scheme: dark) {
+    background-color: #444;
+  }
+
+  &:not(:disabled):hover {
+    @media (prefers-color-scheme: light) {
+      background-color: #ddd;
+    }
+    @media (prefers-color-scheme: dark) {
+      background-color: #555;
+    }
+  }
+
+  &:not(:disabled):active,
+  &:not(:disabled):focus {
+    @media (prefers-color-scheme: light) {
+      background-color: #ccc;
+    }
+    @media (prefers-color-scheme: dark) {
+      background-color: #666;
+    }
+  }
+`;
+
+const badge = css`
+  label: common-badge;
+
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #eee;
+  }
+  @media (prefers-color-scheme: dark) {
+    background-color: #444;
+  }
 `;
 
 export const commonStyles = {
@@ -31,35 +80,37 @@ export const commonStyles = {
     text-decoration: none;
   `,
 
-  emptyButton,
+  emptyInput,
 
   linkButton: css`
-    ${emptyButton}
+    ${input}
+    ${badge}
     label: common-link-button;
 
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
     cursor: pointer;
     transition:
       background-color 0.2s,
       border-color 0.2s;
 
-    &:hover {
-      @media (prefers-color-scheme: light) {
-        background-color: #eee;
-      }
-      @media (prefers-color-scheme: dark) {
-        background-color: #444;
-      }
+    @media (prefers-color-scheme: light) {
+      background: none;
     }
+    @media (prefers-color-scheme: dark) {
+      background: none;
+    }
+  `,
 
-    &:active {
-      @media (prefers-color-scheme: light) {
-        background-color: #ddd;
-      }
-      @media (prefers-color-scheme: dark) {
-        background-color: #555;
-      }
-    }
+  button: css`
+    ${input}
+    label: common-button;
+  `,
+
+  input,
+
+  badge,
+
+  select: css`
+    ${input}
+    label: common-select;
   `,
 };

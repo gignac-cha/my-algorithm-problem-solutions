@@ -1,8 +1,8 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { accessTokenKey } from '../constants/localStorage';
 import { defaultFailureCount } from '../constants/query';
 import { convertGitHubContentResponse } from '../utilities/github';
-import { getSolution, getSolutions } from '../utilities/request';
+import { addSolution, getSolution, getSolutions } from '../utilities/request';
 
 export const useSolutionsQuery = (category: CategoryLike) => {
   const accessToken = localStorage.getItem(accessTokenKey);
@@ -38,7 +38,10 @@ export const useSolutionQuery = (
   solution: SolutionLike,
 ) => {
   const accessToken = localStorage.getItem(accessTokenKey);
-  return useSuspenseQuery({
+  return useSuspenseQuery<
+    string,
+    GitHubContentErrorResponse | GitHubRateLimitErrorResponse
+  >({
     queryKey: [
       'github',
       'content',
@@ -56,5 +59,23 @@ export const useSolutionQuery = (
       }
       return true;
     },
+  });
+};
+
+interface UseSolutionAddMutationProperties {
+  solution: SolutionLike;
+  content: string;
+}
+
+export const useSolutionAddMutation = (category: CategoryLike) => {
+  const accessToken = localStorage.getItem(accessTokenKey);
+  return useMutation<
+    unknown,
+    GitHubContentErrorResponse | GitHubRateLimitErrorResponse,
+    UseSolutionAddMutationProperties
+  >({
+    mutationKey: ['github', 'content', 'solution', category.name, accessToken],
+    mutationFn: ({ solution, content }) =>
+      addSolution({ category, solution, content, accessToken }),
   });
 };
