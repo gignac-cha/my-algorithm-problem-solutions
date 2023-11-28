@@ -5,8 +5,10 @@ const {
   VITE_GITHUB_API_URL: GITHUB_API_URL,
   VITE_GITHUB_OWNER: GITHUB_OWNER,
   VITE_GITHUB_REPOSITORY: GITHUB_REPOSITORY,
-  VITE_GITHUB_USER_NAME: GITHUB_USER_NAME,
-  VITE_GITHUB_USER_EMAIL: GITHUB_USER_EMAIL,
+  VITE_GITHUB_CONTENT_COMMITTER_NAME: GITHUB_CONTENT_COMMITTER_NAME,
+  VITE_GITHUB_CONTENT_COMMITTER_EMAIL: GITHUB_CONTENT_COMMITTER_EMAIL,
+  VITE_GITHUB_COMMENT_COMMITTER_NAME: GITHUB_COMMENT_COMMITTER_NAME,
+  VITE_GITHUB_COMMENT_COMMITTER_EMAIL: GITHUB_COMMENT_COMMITTER_EMAIL,
 } = import.meta.env;
 
 interface GetGitHubAccessTokenProperties {
@@ -32,7 +34,7 @@ const GITHUB_RATE_LIMIT_URL = `${GITHUB_API_URL}/rate_limit`;
 
 export const getGitHubRateLimit = async ({
   accessToken,
-}: NeedAccessTokenProperties): Promise<GitHubRateLimitResponse> => {
+}: Partial<NeedAccessTokenProperties>): Promise<GitHubRateLimitResponse> => {
   const url = new URL(GITHUB_RATE_LIMIT_URL);
   const headers: HeadersInit = {};
   if (accessToken) {
@@ -83,7 +85,8 @@ const getGitHubContents = async <
 >({
   path,
   accessToken,
-}: GetGitHubContentsProperties & NeedAccessTokenProperties): Promise<T> => {
+}: GetGitHubContentsProperties &
+  Partial<NeedAccessTokenProperties>): Promise<T> => {
   const url = new URL(
     getGitHubContentsURL(GITHUB_OWNER, GITHUB_REPOSITORY, path),
   );
@@ -106,7 +109,7 @@ const getGitHubContent = async ({
   path,
   accessToken,
 }: GetGitHubContentProperties &
-  NeedAccessTokenProperties): Promise<GitHubContentResponse> => {
+  Partial<NeedAccessTokenProperties>): Promise<GitHubContentResponse> => {
   return getGitHubContents({ path, accessToken });
 };
 
@@ -136,8 +139,8 @@ const addGitHubContent = async ({
     path,
     message: `Add ${path}`,
     committer: {
-      name: GITHUB_USER_NAME,
-      email: GITHUB_USER_EMAIL,
+      name: GITHUB_CONTENT_COMMITTER_NAME,
+      email: GITHUB_CONTENT_COMMITTER_EMAIL,
     },
     content: btoa(content),
   };
@@ -151,7 +154,7 @@ const addGitHubContent = async ({
 
 export const getCategories = async ({
   accessToken,
-}: NeedAccessTokenProperties): Promise<GitHubContentResponse[]> => {
+}: Partial<NeedAccessTokenProperties>): Promise<GitHubContentResponse[]> => {
   return getGitHubContents({ accessToken });
 };
 
@@ -162,7 +165,7 @@ interface GetSolutionsProperties {
 export const getSolutions = async ({
   category,
   accessToken,
-}: GetSolutionsProperties & NeedAccessTokenProperties): Promise<
+}: GetSolutionsProperties & Partial<NeedAccessTokenProperties>): Promise<
   GitHubContentResponse[]
 > => {
   return getGitHubContents({ path: category.name, accessToken });
@@ -177,7 +180,8 @@ export const getSolution = async ({
   category,
   solution,
   accessToken,
-}: GetSolutionProperties & NeedAccessTokenProperties): Promise<string> => {
+}: GetSolutionProperties &
+  Partial<NeedAccessTokenProperties>): Promise<string> => {
   const content: GitHubContentResponse = await getGitHubContent({
     path: `${category.name}/${solution.name}`,
     accessToken,

@@ -4,8 +4,14 @@ import { defaultFailureCount } from '../constants/query';
 import { convertGitHubContentResponse } from '../utilities/github';
 import { addSolution, getSolution, getSolutions } from '../utilities/request';
 
-export const useSolutionsQuery = (category: CategoryLike) => {
-  const accessToken = localStorage.getItem(accessTokenKey);
+interface UseSolutionsQueryProperties {
+  category: CategoryLike;
+}
+
+export const useSolutionsQuery = ({
+  category,
+}: UseSolutionsQueryProperties) => {
+  const accessToken = localStorage.getItem(accessTokenKey) ?? undefined;
   return useSuspenseQuery<
     GitHubContentResponse[],
     GitHubContentErrorResponse | GitHubRateLimitErrorResponse,
@@ -33,11 +39,16 @@ export const useSolutionsQuery = (category: CategoryLike) => {
   });
 };
 
-export const useSolutionQuery = (
-  category: CategoryLike,
-  solution: SolutionLike,
-) => {
-  const accessToken = localStorage.getItem(accessTokenKey);
+interface UseSolutionQueryProperties {
+  category: CategoryLike;
+  solution: SolutionLike;
+}
+
+export const useSolutionQuery = ({
+  category,
+  solution,
+}: UseSolutionQueryProperties) => {
+  const accessToken = localStorage.getItem(accessTokenKey) ?? undefined;
   return useSuspenseQuery<
     string,
     GitHubContentErrorResponse | GitHubRateLimitErrorResponse
@@ -63,19 +74,41 @@ export const useSolutionQuery = (
 };
 
 interface UseSolutionAddMutationProperties {
+  category: CategoryLike;
+}
+interface UseSolutionAddMutationFunctionProperties {
   solution: SolutionLike;
   content: string;
 }
 
-export const useSolutionAddMutation = (category: CategoryLike) => {
+export const useSolutionAddMutation = ({
+  category,
+}: UseSolutionAddMutationProperties) => {
   const accessToken = localStorage.getItem(accessTokenKey);
   return useMutation<
     unknown,
     GitHubContentErrorResponse | GitHubRateLimitErrorResponse,
-    UseSolutionAddMutationProperties
+    UseSolutionAddMutationFunctionProperties
   >({
     mutationKey: ['github', 'content', 'solution', category.name, accessToken],
-    mutationFn: ({ solution, content }) =>
-      addSolution({ category, solution, content, accessToken }),
+    mutationFn: ({ solution, content }) => {
+      if (!accessToken) {
+        throw { accessToken, message: 'Invalid access token.' };
+      }
+      return addSolution({
+        category,
+        solution,
+        content,
+        accessToken,
+      });
+    },
+    retry: (failureCount: number, error: GitHubRateLimitErrorResponse) => {
+      if (failureCount > defaultFailureCount) {
+        return false;
+      } else if (error.message.startsWith('API rate limit exceeded')) {
+        return false;
+      }
+      return true;
+    },
   });
 };

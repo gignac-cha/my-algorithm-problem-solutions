@@ -20,7 +20,7 @@ const Container: FunctionComponent<SolutionViewerProperties> = ({
   category,
   solution,
 }) => {
-  const { data: code } = useSolutionQuery(category, solution);
+  const { data: code } = useSolutionQuery({ category, solution });
 
   const language = useMemo(
     () => getLanguageFromExtensions(solution.name),

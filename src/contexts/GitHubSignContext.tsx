@@ -63,8 +63,10 @@ export const GitHubSignContextProvider: FunctionComponent<
 
   const onSignedIn = useCallback(() => {
     dispatch({ type: 'SIGNED_IN' });
-    queryClient.invalidateQueries({ queryKey: githubRateLimitQueryKey });
-  }, [queryClient]);
+    queryClient.invalidateQueries({
+      queryKey: [...githubRateLimitQueryKey, accessToken],
+    });
+  }, [accessToken, queryClient]);
 
   const signOut = useCallback(async () => {
     await deleteAccessToken();

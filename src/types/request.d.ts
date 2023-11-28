@@ -1,5 +1,5 @@
 declare interface NeedAccessTokenProperties {
-  accessToken: string | null;
+  accessToken: string;
 }
 
 declare interface GitHubCommitter {

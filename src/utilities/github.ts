@@ -31,6 +31,12 @@ export const convertGitHubRateLimitResponse = ({
   rate,
 }: GitHubRateLimitResponse) => rate;
 
+export const convertGitHubUserResponse = ({
+  login: id,
+  name,
+  avatar_url: avatarURL,
+}: GitHubUserResponse): GitHubUser => ({ id, name, avatarURL });
+
 export const convertGitHubContentResponse = ({
   type,
   name,

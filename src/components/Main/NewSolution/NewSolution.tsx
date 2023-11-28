@@ -97,13 +97,14 @@ const Container = () => {
   const languageSelectRef = useRef<HTMLSelectElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const [category, setCategory] = useState<string>(categoryName);
+  const [category, setCategory] = useState<CategoryLike>({
+    name: categoryName,
+  });
   const onCategorychange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) =>
-      setCategory(event.currentTarget.value),
+      setCategory({ name: event.currentTarget.value }),
     [],
   );
-  const categoryData = useMemo(() => ({ name: category }), [category]);
 
   const queryClient = useQueryClient();
 
@@ -129,8 +130,8 @@ const Container = () => {
   );
 
   const nameCacheKey = useMemo(
-    () => getEditorNameCacheKey(categoryData),
-    [categoryData],
+    () => getEditorNameCacheKey(category),
+    [category],
   );
   const { data: cachedName } = useLocalStorageQuery(nameCacheKey, '');
   const { mutateAsync: setCachedName } = useLocalStorageMutation(nameCacheKey);
@@ -150,8 +151,8 @@ const Container = () => {
   );
 
   const valueCacheKey = useMemo(
-    () => getEditorValueCacheKey(categoryData),
-    [categoryData],
+    () => getEditorValueCacheKey(category),
+    [category],
   );
   const { data: cachedValue } = useLocalStorageQuery(valueCacheKey, '');
   const { mutateAsync: setCachedValue } =
@@ -259,7 +260,7 @@ const Container = () => {
     [cachedName, cachedValue],
   );
 
-  const { mutateAsync: addSolution } = useSolutionAddMutation(categoryData);
+  const { mutateAsync: addSolution } = useSolutionAddMutation({ category });
 
   const onSaveClick = useCallback(async () => {
     if (canSave) {

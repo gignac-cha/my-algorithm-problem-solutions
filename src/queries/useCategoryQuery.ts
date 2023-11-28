@@ -5,7 +5,7 @@ import { convertGitHubContentResponse } from '../utilities/github';
 import { getCategories } from '../utilities/request';
 
 export const useCategoriesQuery = () => {
-  const accessToken = localStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey) ?? undefined;
   return useSuspenseQuery<
     GitHubContentResponse[],
     GitHubContentErrorResponse | GitHubRateLimitErrorResponse,

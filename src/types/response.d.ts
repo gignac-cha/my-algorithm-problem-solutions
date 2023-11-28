@@ -43,6 +43,12 @@ declare interface GitHubRateLimitResponse {
   rate: GitHubRateLimitResponseItem;
 }
 
+declare interface GitHubUserPlan {
+  name: 'free';
+  space: number;
+  collaborators: number;
+  private_repos: number;
+}
 declare interface GitHubUserResponse {
   login: string;
   id: number;
@@ -82,18 +88,18 @@ declare interface GitHubUserResponse {
   disk_usage: number;
   collaborators: number;
   two_factor_authentication: true;
-  plan: {
-    name: 'free';
-    space: number;
-    collaborators: number;
-    private_repos: number;
-  };
+  plan: GitHubUserPlan;
 }
 declare interface GitHubUserErrorResponse {
   documentation_url: string;
   message: string;
 }
 
+declare interface GitHubContentLinks {
+  self: string;
+  git: string;
+  html: string;
+}
 declare interface GitHubContentResponse {
   name: string;
   path: string;
@@ -104,11 +110,7 @@ declare interface GitHubContentResponse {
   git_url: string;
   download_url: string;
   type: 'dir' | 'file';
-  _links: {
-    self: string;
-    git: string;
-    html: string;
-  };
+  _links: GitHubContentLinks;
 }
 declare interface GitHubContentErrorResponse {
   documentation_url: string;
