@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - 'main'
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,7 +28,7 @@ concurrency:
 
 jobs:
   # Build job
-  build:
+  build-on-push:
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
@@ -72,12 +77,73 @@ jobs:
         uses: actions/upload-pages-artifact@v2
 
   # Deployment job
-  deploy:
+  deploy-on-push:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-on-push
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+  # Build job
+  build-on-merged:
+    environment: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Install `pnpm`
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+      - name: Get `pnpm` store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup `pnpm` cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+      - name: Setup `vite` cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.vite
+          key: ${{ runner.os }}-vite
+          restore-keys: ${{ runner.os }}-vite
+      - name: Build project
+        env:
+          VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
+          VITE_GITHUB_OAUTH_CODE_URL: ${{ secrets.VITE_GITHUB_OAUTH_CODE_URL }}
+          VITE_GITHUB_OAUTH_URL: ${{ vars.VITE_GITHUB_OAUTH_URL }}
+          VITE_GITHUB_API_URL: ${{ vars.VITE_GITHUB_API_URL }}
+          VITE_GITHUB_REPOSITORY: ${{ vars.VITE_GITHUB_REPOSITORY }}
+          VITE_GITHUB_OWNER: ${{ vars.VITE_GITHUB_OWNER }}
+          VITE_GITHUB_CONTENT_COMMITER_NAME: ${{ vars.VITE_GITHUB_CONTENT_COMMITER_NAME }}
+          VITE_GITHUB_CONTENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_CONTENT_COMMITER_EMAIL }}
+          VITE_GITHUB_COMMENT_COMMITER_NAME: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_NAME }}
+          VITE_GITHUB_COMMENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_EMAIL }}
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+
+  # Deployment job
+  deploy-on-merged:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-on-merged
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
