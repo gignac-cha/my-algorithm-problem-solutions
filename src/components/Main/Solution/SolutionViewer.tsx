@@ -2,6 +2,8 @@ import { FunctionComponent, Suspense, lazy, useMemo, useState } from 'react';
 import { useAnimationFrame } from '../../../hooks/useAnimationFrame';
 import { useSolutionQuery } from '../../../queries/useSolutionQuery';
 import { getLanguageFromExtensions, getTheme } from '../../../utilities/monaco';
+import { SolutionNotFoundError } from './SolutionNotFoundError';
+import { SolutionNotFoundErrorBoundary } from './SolutionNotFoundErrorBoundary';
 import { SolutionViewerLoading } from './SolutionViewerLoading';
 import { styles } from './styles';
 
@@ -46,9 +48,15 @@ export const SolutionViewer: FunctionComponent<SolutionViewerProperties> = ({
 }) => {
   return (
     <section css={styles.viewer.container}>
-      <Suspense fallback={<SolutionViewerLoading />}>
-        <Container category={category} solution={solution} />
-      </Suspense>
+      <SolutionNotFoundErrorBoundary
+        fallback={
+          <SolutionNotFoundError category={category} solution={solution} />
+        }
+      >
+        <Suspense fallback={<SolutionViewerLoading />}>
+          <Container category={category} solution={solution} />
+        </Suspense>
+      </SolutionNotFoundErrorBoundary>
     </section>
   );
 };

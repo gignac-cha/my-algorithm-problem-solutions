@@ -1,6 +1,8 @@
 import { FunctionComponent, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSolutionsQuery } from '../../../queries/useSolutionQuery';
+import { CategoryNotFoundError } from './CategoryNotFoundError';
+import { CategoryNotFoundErrorBoundary } from './CategoryNotFoundErrorBoundary';
 import { SolutionListItem } from './SolutionListItem';
 import { SolutionListLoading } from './SolutionListLoading';
 import { styles } from './styles';
@@ -41,9 +43,13 @@ export const SolutionList: FunctionComponent<SolutionListProperties> = ({
 }) => {
   return (
     <section>
-      <Suspense fallback={<SolutionListLoading />}>
-        <Container category={category} />
-      </Suspense>
+      <CategoryNotFoundErrorBoundary
+        fallback={<CategoryNotFoundError category={category} />}
+      >
+        <Suspense fallback={<SolutionListLoading />}>
+          <Container category={category} />
+        </Suspense>
+      </CategoryNotFoundErrorBoundary>
     </section>
   );
 };

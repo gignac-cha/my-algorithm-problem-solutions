@@ -108,9 +108,35 @@ export const commonStyles = {
   input,
 
   badge,
+  errorBadge: css`
+    label: common-error-badge;
+
+    background-color: #f77 !important;
+  `,
 
   select: css`
     ${input}
     label: common-select;
   `,
+
+  error: {
+    container: css`
+      label: common-error-container;
+
+      padding: 1rem;
+      border-radius: 4px;
+      transition:
+        background-color 0.2s,
+        border-color 0.2s;
+
+      @media (prefers-color-scheme: light) {
+        background-color: #fbb;
+        border: 1px solid #f77;
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: #733;
+        border: 1px solid #f77;
+      }
+    `,
+  },
 };

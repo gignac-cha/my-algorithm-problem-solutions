@@ -10,7 +10,7 @@ import { NewSolution } from './NewSolution/NewSolution';
 import { Solution } from './Solution/Solution';
 import { styles } from './styles';
 
-export const Main = () => {
+const Container = () => {
   const { data: rateLimit } = useGitHubRateLimitQuery();
 
   const [searchParams] = useSearchParams();
@@ -26,20 +26,28 @@ export const Main = () => {
   );
 
   return (
+    <GitHubRateLimitErrorBoundary
+      rateLimit={rateLimit}
+      fallback={<GitHubRateLimitError rateLimit={rateLimit} />}
+    >
+      <Suspense>
+        <Header />
+      </Suspense>
+      {!categoryName && !solutionName && <Index />}
+      {categoryName && !solutionName && !isNew && <Category />}
+      {categoryName && !solutionName && isNew && <NewSolution />}
+      {categoryName && solutionName && !isEdit && <Solution />}
+      {/* {categoryName && solutionName && isEdit && <EditSolution />} */}
+    </GitHubRateLimitErrorBoundary>
+  );
+};
+
+export const Main = () => {
+  return (
     <main css={styles.container}>
-      <GitHubRateLimitErrorBoundary
-        rateLimit={rateLimit}
-        fallback={<GitHubRateLimitError rateLimit={rateLimit} />}
-      >
-        <Suspense>
-          <Header />
-        </Suspense>
-        {!categoryName && !solutionName && <Index />}
-        {categoryName && !solutionName && !isNew && <Category />}
-        {categoryName && !solutionName && isNew && <NewSolution />}
-        {categoryName && solutionName && !isEdit && <Solution />}
-        {/* {categoryName && solutionName && isEdit && <EditSolution />} */}
-      </GitHubRateLimitErrorBoundary>
+      <Suspense>
+        <Container />
+      </Suspense>
     </main>
   );
 };

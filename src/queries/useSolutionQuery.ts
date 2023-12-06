@@ -33,6 +33,8 @@ export const useSolutionsQuery = ({
         return false;
       } else if (error.message.startsWith('API rate limit exceeded')) {
         return false;
+      } else if (error.message.startsWith('Not Found')) {
+        return false;
       }
       return true;
     },
@@ -66,6 +68,8 @@ export const useSolutionQuery = ({
       if (failureCount > defaultFailureCount) {
         return false;
       } else if (error.message.startsWith('API rate limit exceeded')) {
+        return false;
+      } else if (error.message.startsWith('Not Found')) {
         return false;
       }
       return true;

@@ -1,37 +1,20 @@
-import { Component, ErrorInfo, ReactNode, SuspenseProps } from 'react';
+import { ReactNode, SuspenseProps } from 'react';
+import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary';
 
 interface GitHubSignInErrorBoundaryProperties extends SuspenseProps {
   onError: () => void;
 }
 
-interface GitHubSignInErrorBoundaryState {
-  hasError: boolean;
-}
-
-export class GitHubSignInErrorBoundary extends Component<
-  GitHubSignInErrorBoundaryProperties,
-  GitHubSignInErrorBoundaryState
-> {
-  constructor(props: GitHubSignInErrorBoundaryProperties) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    if (error.message === 'Bad credentials') {
-      this.props.onError();
-    }
-  }
-
+export class GitHubSignInErrorBoundary extends ErrorBoundary<GitHubSignInErrorBoundaryProperties> {
   render(): ReactNode {
     if (this.state.hasError) {
-      return this.props.fallback;
+      if (this.state.error?.message.startsWith('Bad credentials')) {
+        this.props.onError();
+        return this.props.fallback;
+      } else if (this.state.error?.message.startsWith('Invalid access token')) {
+        this.props.onError();
+        return this.props.fallback;
+      }
     }
     return this.props.children;
   }
