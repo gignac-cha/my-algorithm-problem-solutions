@@ -9,10 +9,12 @@ import { styles } from './styles';
 const Container = () => {
   const { isSigningIn, isSignedIn, signIn, onSignedIn, signOut } =
     useGitHubSignContext();
-  if (!isSigningIn && !isSignedIn) {
-    return <GitHubSignedOut signIn={signIn} />;
-  }
-  return <GitHubSignedIn onSignedIn={onSignedIn} signOut={signOut} />;
+
+  return !isSigningIn && !isSignedIn ? (
+    <GitHubSignedOut signIn={signIn} />
+  ) : (
+    <GitHubSignedIn onSignedIn={onSignedIn} signOut={signOut} />
+  );
 };
 
 export const GitHubSign = () => {

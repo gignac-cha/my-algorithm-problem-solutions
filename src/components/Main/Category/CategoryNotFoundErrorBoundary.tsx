@@ -8,7 +8,6 @@ export class CategoryNotFoundErrorBoundary extends ErrorBoundary {
       if (this.state.error?.message.startsWith('Not Found')) {
         return this.props.fallback;
       }
-      return super.render();
     }
     return this.props.children;
   }

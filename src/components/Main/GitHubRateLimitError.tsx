@@ -47,15 +47,6 @@ const AuthorizedRateLimitError: FunctionComponent<ResetAtProperties> = ({
     </>
   );
 };
-const UncaughtError = () => {
-  return (
-    <>
-      <header>
-        <b>Uncaught Error</b>
-      </header>
-    </>
-  );
-};
 
 interface GitHubRateLimitErrorProperties {
   rateLimit: GitHubRateLimit;
@@ -73,9 +64,7 @@ export const GitHubRateLimitError: FunctionComponent<
 
   return (
     <section css={styles.rateLimitError.container}>
-      {rateLimit.remaining < 0 ? (
-        <UncaughtError />
-      ) : !user ? (
+      {!user ? (
         <AuthorizedRateLimitError resetAt={resetAt} />
       ) : (
         <UnauthorizedRateLimitError resetAt={resetAt} />

@@ -2,7 +2,7 @@
 import { Component, ErrorInfo, ReactNode, SuspenseProps } from 'react';
 import { UncaughtError } from './UncaughtError';
 
-interface ErrorBoundaryState {
+export interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
   errorInfo?: ErrorInfo;
