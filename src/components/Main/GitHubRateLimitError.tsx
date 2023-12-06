@@ -1,4 +1,6 @@
 import { FunctionComponent, useMemo } from 'react';
+import { useGitHubUserQuery } from '../../queries/useGitHubQuery';
+import { Separator } from '../Separator/Separator';
 import { styles } from './styles';
 
 interface ResetAtProperties {
@@ -13,27 +15,38 @@ const UnauthorizedRateLimitError: FunctionComponent<ResetAtProperties> = ({
       <header>
         <b>GitHub API rate limit exceeded.</b>
       </header>
-      <span>
-        Please sign in with your GitHub account, or wait until reset time.{' '}
-        <small>
-          <i>({resetAt})</i>
-        </small>
-      </span>
+      <Separator width={'0px'} />
+      <small>
+        Please sign in with your GitHub account, or wait until reset time.
+        <div>
+          <small>
+            <i>(Reset time: {resetAt})</i>
+          </small>
+        </div>
+      </small>
     </>
   );
 };
-// const AuthorizedRateLimitError: FunctionComponent<ResetAtProperties> = ({
-//   resetAt,
-// }) => {
-//   return (
-//     <>
-//       <header>
-//         <b>Your GitHub API rate limit exceeded.</b>
-//       </header>
-//       <span>Please wait until {resetAt}</span>
-//     </>
-//   );
-// };
+const AuthorizedRateLimitError: FunctionComponent<ResetAtProperties> = ({
+  resetAt,
+}) => {
+  return (
+    <>
+      <header>
+        <b>Your GitHub API rate limit exceeded.</b>
+      </header>
+      <Separator width={'0px'} />
+      <small>
+        Please wait until reset time.
+        <div>
+          <small>
+            <i>(Reset time: {resetAt})</i>
+          </small>
+        </div>
+      </small>
+    </>
+  );
+};
 const UncaughtError = () => {
   return (
     <>
@@ -51,7 +64,7 @@ interface GitHubRateLimitErrorProperties {
 export const GitHubRateLimitError: FunctionComponent<
   GitHubRateLimitErrorProperties
 > = ({ rateLimit }) => {
-  // const { data: user } = useGitHubUserQuery();
+  const { data: user } = useGitHubUserQuery();
 
   const resetAt = useMemo(
     () => new Date(rateLimit.reset * 1000).toString(),
@@ -60,11 +73,11 @@ export const GitHubRateLimitError: FunctionComponent<
 
   return (
     <section css={styles.rateLimitError.container}>
-      {rateLimit.remaining > 0 ? (
+      {rateLimit.remaining < 0 ? (
         <UncaughtError />
+      ) : !user ? (
+        <AuthorizedRateLimitError resetAt={resetAt} />
       ) : (
-        // ) : user ? (
-        //   <AuthorizedRateLimitError resetAt={resetAt} />
         <UnauthorizedRateLimitError resetAt={resetAt} />
       )}
     </section>
