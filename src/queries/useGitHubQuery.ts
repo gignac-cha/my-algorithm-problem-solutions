@@ -36,6 +36,28 @@ export const useGitHubRateLimitQuery = () => {
 
 export const useGitHubUserQuery = () => {
   const accessToken = localStorage.getItem(accessTokenKey);
+  return useQuery<GitHubUserResponse, GitHubUserErrorResponse, GitHubUser>({
+    queryKey: ['github', 'user', accessToken],
+    queryFn: async () => {
+      if (!accessToken) {
+        throw { accessToken, message: 'Invalid access token.' };
+      }
+      return getGitHubUser({ accessToken });
+    },
+    select: convertGitHubUserResponse,
+    retry: (failureCount: number, error: GitHubUserErrorResponse) => {
+      if (failureCount > defaultFailureCount) {
+        return false;
+      } else if (error.message === 'Bad credentials') {
+        return false;
+      }
+      return true;
+    },
+    enabled: !!accessToken,
+  });
+};
+export const useGitHubUserSuspenseQuery = () => {
+  const accessToken = localStorage.getItem(accessTokenKey);
   return useSuspenseQuery<
     GitHubUserResponse,
     GitHubUserErrorResponse,

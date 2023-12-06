@@ -1,6 +1,6 @@
 import { FunctionComponent, Suspense, useEffect, useState } from 'react';
 import { GitHubSignContextProperties } from '../../contexts/GitHubSignContext';
-import { useGitHubUserQuery } from '../../queries/useGitHubQuery';
+import { useGitHubUserSuspenseQuery } from '../../queries/useGitHubQuery';
 import { commonStyles } from '../../styles/common';
 import { GitHubSignInErrorBoundary } from './GitHubSignInErrorBoundary';
 import { GitHubSignInLoading } from './GitHubSignInLoading';
@@ -15,7 +15,7 @@ const Container: FunctionComponent<GitHubSignedInProperties> = ({
   onSignedIn,
   signOut,
 }) => {
-  const { data: user } = useGitHubUserQuery();
+  const { data: user } = useGitHubUserSuspenseQuery();
 
   useEffect(() => {
     onSignedIn();

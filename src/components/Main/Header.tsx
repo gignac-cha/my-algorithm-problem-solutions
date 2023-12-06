@@ -48,7 +48,7 @@ export const Header = () => {
   }, [categoryName, searchParams, setSearchParams, solutionName]);
 
   return (
-    user.id === import.meta.env.VITE_GITHUB_OWNER && (
+    user?.id === import.meta.env.VITE_GITHUB_OWNER && (
       <header css={styles.header.container}>
         {solutionName && isEdit && (
           <button css={commonStyles.button} onClick={onEditSolutionClick}>
