@@ -13,8 +13,8 @@ const client = new QueryClient();
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
+      <Route index element={<Page />} />
       <Route path="/oauth/github" element={<OAuth />} />
-      <Route path="/*" element={<Page />} />
     </Route>,
   ),
   { basename: `/${import.meta.env.VITE_GITHUB_REPOSITORY}` },

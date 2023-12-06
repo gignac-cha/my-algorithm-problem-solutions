@@ -1,5 +1,5 @@
 import { FunctionComponent, Suspense, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useSolutionsQuery } from '../../../queries/useSolutionQuery';
 import { SolutionListItem } from './SolutionListItem';
 import { SolutionListLoading } from './SolutionListLoading';
@@ -12,11 +12,15 @@ interface SolutionListProperties {
 const Container: FunctionComponent<SolutionListProperties> = ({ category }) => {
   const { data: solutions } = useSolutionsQuery({ category });
 
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const moveToSolution = useCallback(
-    (category: CategoryLike, solution: SolutionLike) =>
-      navigate(`/${category.name}/${solution.name}`),
-    [navigate],
+    (category: CategoryLike, solution: SolutionLike) => {
+      searchParams.set('category', category.name);
+      searchParams.set('solution', solution.name);
+      setSearchParams(searchParams);
+    },
+    [searchParams, setSearchParams],
   );
 
   return (

@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   editorLanguageCacheKey,
   getEditorNameCacheKey,
@@ -80,7 +80,7 @@ const acceptExtensions = languages.map(
 const accept = acceptExtensions.join(',');
 
 const Container = () => {
-  const { categoryName = '' } = useParams<RouterParameters>();
+  const [searchParams] = useSearchParams();
 
   const { data: categories } = useCategoriesQuery();
 
@@ -98,7 +98,7 @@ const Container = () => {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const [category, setCategory] = useState<CategoryLike>({
-    name: categoryName,
+    name: searchParams.get('category') ?? 'INVALID_CATEGORY',
   });
   const onCategorychange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) =>

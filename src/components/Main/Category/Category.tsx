@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SolutionList } from './SolutionList';
 
 export const Category = () => {
-  const { categoryName = '' } = useParams<RouterParameters>();
+  const [searchParams] = useSearchParams();
 
-  const category = useMemo(() => ({ name: categoryName }), [categoryName]);
+  const category = useMemo(
+    () => ({ name: searchParams.get('category') ?? 'INVALID_CATEGORY' }),
+    [searchParams],
+  );
 
   return <SolutionList category={category} />;
 };
