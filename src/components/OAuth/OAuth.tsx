@@ -1,22 +1,14 @@
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { accessTokenKey } from '../../constants/localStorage';
+import { useAnimationFrame } from '../../hooks/useAnimationFrame';
 import { getGitHubAccessToken } from '../../utilities/request';
 import { styles } from './styles';
 
 export const OAuth = () => {
-  const ref = useRef<number>();
-
-  const callback = useCallback((index: number) => {
-    ref.current = requestAnimationFrame(() => callback(index + 1));
-    document.title = `${index++ % 2 === 0 ? '⏳' : '⌛️'} Redirecting...`;
-  }, []);
-
   useEffect(() => {
     document.title = 'Redirecting...';
-
-    requestAnimationFrame(() => callback(0));
 
     const url = new URL(location.href);
     const code = url.searchParams.get('code');
@@ -34,9 +26,16 @@ export const OAuth = () => {
         })
         .finally(() => window.close());
     }
+  }, []);
 
-    return () => (ref.current ? cancelAnimationFrame(ref.current) : undefined);
-  }, [callback]);
+  const ref = useRef(0);
+
+  useAnimationFrame(
+    () =>
+      (document.title = `${
+        ref.current++ % 2 === 0 ? '⏳' : '⌛️'
+      } Redirecting...`),
+  );
 
   return (
     <main css={styles.container}>

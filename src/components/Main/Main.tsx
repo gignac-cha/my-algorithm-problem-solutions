@@ -37,7 +37,8 @@ export const Main = () => {
         {!categoryName && !solutionName && <Index />}
         {categoryName && !solutionName && !isNew && <Category />}
         {categoryName && !solutionName && isNew && <NewSolution />}
-        {categoryName && solutionName && <Solution />}
+        {categoryName && solutionName && !isEdit && <Solution />}
+        {/* {categoryName && solutionName && isEdit && <EditSolution />} */}
       </GitHubRateLimitErrorBoundary>
     </main>
   );
