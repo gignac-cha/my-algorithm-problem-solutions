@@ -1,5 +1,5 @@
 import { Suspense, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useCategoriesQuery } from '../../../queries/useCategoryQuery';
 import { CategoryListItem } from './CategoryListItem';
 import { CategoryListLoading } from './CategoryListLoading';
@@ -8,10 +8,14 @@ import { styles } from './styles';
 const Container = () => {
   const { data: categories } = useCategoriesQuery();
 
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const moveToCategory = useCallback(
-    (category: CategoryLike) => navigate(`/${category.name}`),
-    [navigate],
+    (category: CategoryLike) => {
+      searchParams.set('category', category.name);
+      setSearchParams(searchParams);
+    },
+    [searchParams, setSearchParams],
   );
 
   return (

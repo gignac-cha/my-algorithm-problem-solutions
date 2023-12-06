@@ -75,6 +75,11 @@ const getGitHubContentsURL = (
   repository: string,
   path?: string,
 ) => getGitHubSubRepositoryURL(owner, repository, 'contents', path);
+const getGitHubCommentsURL = (
+  owner: string,
+  repository: string,
+  path?: string,
+) => getGitHubSubRepositoryURL(owner, repository, 'comments', path);
 
 interface GetGitHubContentsProperties {
   path?: string;

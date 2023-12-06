@@ -1,15 +1,19 @@
 import { Suspense, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { CommentList } from './CommentList';
 import { SolutionViewer } from './SolutionViewer';
 import { styles } from './styles';
 
 export const Solution = () => {
-  const { categoryName = '', solutionName = '' } =
-    useParams<RouterParameters>();
+  const [searchParams] = useSearchParams();
 
-  const category = useMemo(() => ({ name: categoryName }), [categoryName]);
-  const solution = useMemo(() => ({ name: solutionName }), [solutionName]);
+  const [category, solution] = useMemo(
+    () => [
+      { name: searchParams.get('category') ?? 'INVALID_CATEGORY' },
+      { name: searchParams.get('solution') ?? 'INVALID_SOLUTION' },
+    ],
+    [searchParams],
+  );
 
   return (
     <section css={styles.container}>

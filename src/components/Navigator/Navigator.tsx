@@ -1,48 +1,64 @@
 import { Fragment, useCallback, useMemo } from 'react';
-import {
-  Location,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from './Breadcrumb';
 import { BreadcrumbSeparator } from './BreadcrumbSeparator';
 import { styles } from './styles';
 
-const getBreadcrumbData = (location: Location, link: string, text: string) => {
-  return { link, text, isCurrent: location.pathname === link };
+const getBreadcrumbData = (
+  searchParams: URLSearchParams,
+  url: URL,
+  text: string,
+) => {
+  const link = `${url.pathname}${url.search}`;
+  const keys1 = new Set(searchParams.keys());
+  const keys2 = new Set(url.searchParams.keys());
+  if (keys1.size !== keys2.size) {
+    return { link, text, isCurrent: false };
+  }
+  for (const key of keys1) {
+    if (!keys2.has(key)) {
+      return { link, text, isCurrent: false };
+    }
+  }
+  for (const key of keys2) {
+    if (!keys1.has(key)) {
+      return { link, text, isCurrent: false };
+    }
+  }
+  for (const key of keys1) {
+    if (searchParams.get(key) !== url.searchParams.get(key)) {
+      return { link, text, isCurrent: false };
+    }
+  }
+  return { link, text, isCurrent: true };
 };
 
-const getBreadcurmbs = function* (
-  location: Location,
-  categoryName?: string,
-  solutionName?: string,
-) {
-  yield getBreadcrumbData(location, '/', 'Home');
-  if (categoryName) {
-    yield getBreadcrumbData(location, `/${categoryName}`, categoryName);
+const getBreadcrumbs = function* (searchParams: URLSearchParams) {
+  const url = new URL(window.location.origin);
+  url.pathname = '/';
+  yield getBreadcrumbData(searchParams, url, 'Home');
+  const category = searchParams.get('category');
+  if (category) {
+    url.searchParams.set('category', category);
+    yield getBreadcrumbData(searchParams, url, category);
   }
-  if (categoryName && solutionName) {
-    yield getBreadcrumbData(
-      location,
-      `/${categoryName}/${solutionName}`,
-      solutionName,
-    );
+  const solution = searchParams.get('solution');
+  if (category && solution) {
+    url.searchParams.set('category', category);
+    url.searchParams.set('solution', solution);
+    yield getBreadcrumbData(searchParams, url, solution);
   }
 };
 
 export const Navigator = () => {
-  const { categoryName = '', solutionName = '' } =
-    useParams<RouterParameters>();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
   const moveToLink = useCallback((link: string) => navigate(link), [navigate]);
 
-  const location = useLocation();
-
   const breadcrumbs = useMemo(
-    () => [...getBreadcurmbs(location, categoryName, solutionName)],
-    [categoryName, location, solutionName],
+    () => [...getBreadcrumbs(searchParams)],
+    [searchParams],
   );
 
   return (
