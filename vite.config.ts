@@ -1,10 +1,11 @@
 import react from '@vitejs/plugin-react';
 import { copyFile, mkdir } from 'fs/promises';
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
+import _package from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '',
+  base: `/${_package.name}`,
   build: {
     outDir: '_site',
     emptyOutDir: true,

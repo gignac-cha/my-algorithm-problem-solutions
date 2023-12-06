@@ -2,9 +2,9 @@ name: Build and Deploy GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
-  push:
-    branches:
-      - 'main'
+  # push:
+  #   branches:
+  #     - 'main'
   pull_request:
     types:
       - closed
@@ -116,12 +116,12 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
-      - name: Setup `vite` cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules/.vite
-          key: ${{ runner.os }}-vite
-          restore-keys: ${{ runner.os }}-vite
+      # - name: Setup `vite` cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: node_modules/.vite
+      #     key: ${{ runner.os }}-vite
+      #     restore-keys: ${{ runner.os }}-vite
       - name: Build project
         env:
           VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
