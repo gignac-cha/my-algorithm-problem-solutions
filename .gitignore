@@ -409,4 +409,8 @@ cython_debug/
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,jetbrains+all,node,python,c++-
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,jetbrains+all,node
+
+
+!.vscode/scripts/
+.vscode/scripts/.*
