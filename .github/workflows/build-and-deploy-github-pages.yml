@@ -4,7 +4,11 @@ on:
   # Runs on pushes targeting the default branch
   # push:
   #   branches:
-  #     - 'main'
+  #     - 'feature/**'
+  #     - 'fix/**'
+  #     - 'bugfix/**'
+  #     - 'chore/**'
+  #     - 'test/**'
   pull_request:
     types:
       - closed
@@ -72,7 +76,7 @@ jobs:
   #         VITE_GITHUB_CONTENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_CONTENT_COMMITER_EMAIL }}
   #         VITE_GITHUB_COMMENT_COMMITER_NAME: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_NAME }}
   #         VITE_GITHUB_COMMENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_EMAIL }}
-  #       run: npm run build
+  #       run: pnpm build
   #     - name: Upload artifact
   #       uses: actions/upload-pages-artifact@v2
 
@@ -122,7 +126,7 @@ jobs:
           VITE_GITHUB_CONTENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_CONTENT_COMMITER_EMAIL }}
           VITE_GITHUB_COMMENT_COMMITER_NAME: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_NAME }}
           VITE_GITHUB_COMMENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_EMAIL }}
-        run: npm run build
+        run: pnpm build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
 
@@ -184,7 +188,7 @@ jobs:
           VITE_GITHUB_CONTENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_CONTENT_COMMITER_EMAIL }}
           VITE_GITHUB_COMMENT_COMMITER_NAME: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_NAME }}
           VITE_GITHUB_COMMENT_COMMITER_EMAIL: ${{ vars.VITE_GITHUB_COMMENT_COMMITER_EMAIL }}
-        run: npm run build
+        run: pnpm build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
 
